@@ -109,9 +109,12 @@ class BookingSchedulerTest(unittest.TestCase):
         # self.assertEqual(self.testable_mail_sender.get_count_send_mail_is_called(), 1)
 
         self.mail_sender.send_mail.assert_called_once()
-    def test_현재날짜가_일요일인_경우_예약불가_예외처리(self):
+
+    @patch.object(BookingScheduler, "get_now", return_value=datetime.strptime("2021/03/28 17:00", "%Y/%m/%d %H:%M"))
+    def test_현재날짜가_일요일인_경우_예약불가_예외처리(self, mock):
         # arrange
-        self.booking_scheduler = TestableScheduler(CAPACITY_PER_HOUR, date_time="2021/03/28 17:00")
+        # self.booking_scheduler = TestableScheduler(CAPACITY_PER_HOUR, date_time="2021/03/28 17:00")
+        self.booking_scheduler = BookingScheduler(CAPACITY_PER_HOUR)
 
         # act and assert
         with self.assertRaises(ValueError):
